@@ -23,7 +23,7 @@ module.exports = {
       type: 'confirm',
       name: 'ingress-frontend',
       message: 'Is it a frontend application?',
-      default: true,
+      default: false,
     },
     {
       type: 'confirm',
