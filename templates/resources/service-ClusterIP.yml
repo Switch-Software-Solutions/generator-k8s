@@ -1,0 +1,12 @@
+# Service-ClusterIP
+apiVersion: v1
+kind: Service
+metadata:
+  name: <%= data['service-name'] %>-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: <%= data['selector-component'] %>
+  ports:
+    - port: 80
+      targetPort: 80
