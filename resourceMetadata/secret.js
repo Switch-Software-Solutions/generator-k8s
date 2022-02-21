@@ -9,28 +9,21 @@ module.exports = {
     },
     {
       type: 'input',
-      name: 'global-namespace',
-      message: 'The name of the namespace?',
-      default: '${NAMESPACE}',
-      validate: input => !!!input ? 'Please enter a value' : true,
-    },
-    {
-      type: 'input',
-      name: 'global-app-name',
-      message: 'The name of the app (if any)?',
-      default: '${CI_PROJECT_PATH_SLUG}',
-    },
-    {
-      type: 'input',
-      name: 'global-app-tier',
-      message: 'The tier name of the app (if any)?',
-    },
-    {
-      type: 'input',
       name: 'secret-name',
       message: 'The name of the secret map?',
-      default: '${CI_PROJECT_PATH_SLUG}',
       validate: input => !!!input ? 'Please enter a value' : true,
+    },
+    {
+      type: 'confirm',
+      name: 'secret-db',
+      message: 'It secret for database?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'secret-server',
+      message: 'It secret for server (backend)?',
+      default: false,
     },
     {
       type: 'confirm',
@@ -47,12 +40,6 @@ module.exports = {
     },
   ],
   transformAnswers(data) {
-    if (typeof data['global-app-name'] === 'string') {
-      data['global-app-name'] = data['global-app-name'].trim();
-    }
-    if (typeof data['global-app-tier'] === 'string') {
-      data['global-app-tier'] = data['global-app-tier'].trim();
-    }
     if (!data['secret-values']) {
       data['secret-values'] = ['secret: DATA'];
     } else if (typeof data['secret-values'] === 'string') {
