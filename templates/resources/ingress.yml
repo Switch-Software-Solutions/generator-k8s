@@ -1,22 +1,42 @@
 # Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: <%= data['ingress-name'] %>
-  namespace: <%= data['global-namespace'] %>
+  name: <%= data['ingress-name'] %>-ingress
   annotations:
-    kubernetes.io/ingress.class: nginx<% if(data['ingress-use-ssl']) { %>
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod-issuer
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"<% } %>
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /<% if(data['ingress-use-ssl']) { %>
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'<% } %><% if(data['ingress-backend']) { %>
+    nginx.ingress.kubernetes.io/proxy-body-size: '0'<% } %><% if(data['ingress-frontend']) { %>
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~* \.(manifest|appcache|html?|xml|json)) {
+        add_header Cache-Control no-cache;
+        expires 0;
+      }
+
+      if ($request_uri ~* \.(jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)) {
+        expires 1M;
+        add_header Cache-Control "public";
+      }
+
+      if ($request_uri ~* \.(css|js)) {
+        expires 1y;
+        add_header Cache-Control "public";
+      }<% } %>
+
 spec:<% if(data['ingress-use-ssl']) { %>
   tls:
-  - secretName: <%= data['ingress-name'] %>
-    hosts:<% for(const url of data['ingress-urls']) { %>
-    - <%= url -%><% } %><% } %>
+    - secretName: <%= data['tls-name'] %>
+      hosts:<% for(const url of data['ingress-urls']) { %>
+        - <%= url -%><% } %><% } %>
   rules:<% for(const url of data['ingress-urls']) { %>
-  - host: <%= url %>
-    http:
-      paths:
-      - backend:
-          serviceName: <%= data['ingress-name'] %>
-          servicePort: 80<% } %>
+    - host: <%= url %>
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: <%= data['service-name'] %>
+              port:
+                number: 80<% } %>
