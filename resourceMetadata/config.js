@@ -9,28 +9,27 @@ module.exports = {
     },
     {
       type: 'input',
-      name: 'global-namespace',
-      message: 'The name of the namespace?',
-      default: '${NAMESPACE}',
-      validate: input => !!!input ? 'Please enter a value' : true,
-    },
-    {
-      type: 'input',
-      name: 'global-app-name',
-      message: 'The name of the app (if any)?',
-      default: '${CI_PROJECT_PATH_SLUG}',
-    },
-    {
-      type: 'input',
-      name: 'global-app-tier',
-      message: 'The tier name of the app (if any)?',
-    },
-    {
-      type: 'input',
       name: 'config-name',
       message: 'The name of the config map?',
-      default: '${CI_PROJECT_PATH_SLUG}',
       validate: input => !!!input ? 'Please enter a value' : true,
+    },
+    {
+      type: 'confirm',
+      name: 'config-db',
+      message: 'It config for database?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'config-server',
+      message: 'It config for server (backend)?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'config-client',
+      message: 'It config for client (frontend)?',
+      default: false,
     },
     {
       type: 'confirm',
@@ -47,12 +46,6 @@ module.exports = {
     },
   ],
   transformAnswers(data) {
-    if (typeof data['global-app-name'] === 'string') {
-      data['global-app-name'] = data['global-app-name'].trim();
-    }
-    if (typeof data['global-app-tier'] === 'string') {
-      data['global-app-tier'] = data['global-app-tier'].trim();
-    }
     if (!data['config-values']) {
       data['config-values'] = ['CONFIG: DATA'];
     } else if (typeof data['config-values'] === 'string') {
