@@ -15,9 +15,27 @@ module.exports = {
     },
     {
       type: 'input',
-      name: 'selector-component',
-      message: 'The selector of the service',
-      validate: input => !!!input ? 'Please enter a value' : true,
+      name: 'service-port',
+      message: 'The port of the service?',
+      default: '80',
     },
+    {
+      type: 'confirm',
+      name: 'service-db',
+      message: 'It service for database?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'service-server',
+      message: 'It service for server (backend)?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'service-client',
+      message: 'It service for client (frontend)?',
+      default: false,
+    }
   ],
 };
