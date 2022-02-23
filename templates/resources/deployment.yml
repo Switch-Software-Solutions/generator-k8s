@@ -2,47 +2,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <%= data['deployment-name'] %>
-  namespace: <%= data['global-namespace'] %><% if(data['global-app-name'] || data['global-app-tier']) { %>
-  labels:<% if(data['global-app-name']) { %>
-    app: <%= data['global-app-name'] -%><% } %><% if(data['global-app-tier']) { %>
-    tier: <%= data['global-app-tier'] -%><% } %><% } %>
+  name: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-server']) { %>server-<% } else if(data['deployment-client']) { %>client-<% } %><%= data['deployment-name'] %>-deployment
 spec:
-  replicas: 1
-  revisionHistoryLimit: 1
+  replicas: <%= data['deployment-replicas'] %>
   selector:
     matchLabels:
-      name: <%= data['deployment-name'] %><% if(data['global-app-name']) { %>
-      app: <%= data['global-app-name'] -%><% } %><% if(data['global-app-tier']) { %>
-      tier: <%= data['global-app-tier'] -%><% } %>
+      component: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-server']) { %>server-<% } else if(data['deployment-client']) { %>client-<% } %><%= data['deployment-name'] %>
   template:
     metadata:
       labels:
-        name: <%= data['deployment-name'] %><% if(data['global-app-name']) { %>
-        app: <%= data['global-app-name'] -%><% } %><% if(data['global-app-tier']) { %>
-        tier: <%= data['global-app-tier'] -%><% } %>
+        component: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-server']) { %>server-<% } else if(data['deployment-client']) { %>client-<% } %><%= data['deployment-name'] %>
     spec:
       containers:
-      - name: <%= data['global-app-tier'] || data['global-app-name'] %>
-        image: <%= data['deployment-image'] %>
-        imagePullPolicy: IfNotPresent<% if(data['deployment-ports'].length > 0) { %>
-        ports:<% for(const map of data['deployment-ports']) { %>
-        - name: <%= map.name %>
-          containerPort: <%= map.port -%><% } %><% } %><% if(data['deployment-ports'].length > 0) { %>
-        livenessProbe:
-          tcpSocket:
-            port: <%= data['deployment-ports'][0].port %>
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
-        readinessProbe:
-          tcpSocket:
-            port: <%= data['deployment-ports'][0].port %>
-          initialDelaySeconds: 5
-          timeoutSeconds: 1<% } %><% if(data['pvc-name']) { %>
-        volumeMounts:
-        - mountPath: /MOUNT
-          name: <%= data['pvc-name'] %>
+        - name: <%= data['deployment-name'] %>
+          image: <%= data['deployment-image'] %><% if(data['deployment-ports'].length > 0) { %>
+          ports:<% for(const port of data['deployment-ports']) { %>
+            - containerPort: <%= port -%><% } %><% } %><% if(data['deployment-db'] && data['deployment-db-mysql']) { %>
+          args:
+            - --lower_case_table_names=1<% } %>
+          resources:
+            requests:
+              memory: '100Mi'
+              cpu: '50m'
+            limits:
+              memory: '200Mi'
+              cpu: '100m'<% if(data['deployment-db'] || data['deployment-server']) { %>
+          envFrom:
+            - configMapRef:
+                name: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-server']) { %>server-<% } %><%= data['deployment-name'] %>-config-map
+            - secretRef:
+                name: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-server']) { %>server-<% } %><%= data['deployment-name'] %>-secret <% } %> <% if(data['deployment-ports'].length > 0) { %>
+          livenessProbe:
+            tcpSocket:
+              port: <%= data['deployment-ports'][0] %>
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+          readinessProbe:
+            tcpSocket:
+              port: <%= data['deployment-ports'][0] %>
+            initialDelaySeconds: 5
+            timeoutSeconds: 1 <% } %> <% if(data['deployment-db'] || data['deployment-client']) { %>
+          volumeMounts:
+            - name: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-client']) { %>client-<% } %><%= data['deployment-name'] %><% if(data['deployment-db']) { %>-persistent-storage<% } else if(data['deployment-client']) { %>-env<% } %> <% if(data['deployment-db']) { %>
+              mountPath: /var/lib/mysql
+              subPath: mysql <% } else if(data['deployment-client']) { %>
+              mountPath: /usr/local/apache2/htdocs/assets/.env
+              subPath: .env <% } %>
       volumes:
-      - name: <%= data['pvc-name'] %>
-        persistentVolumeClaim:
-          claimName: <%= data['pvc-name'] %><% } %>
+        - name: <% if(data['deployment-db']) { %>db-<% } else if(data['deployment-client']) { %>client-<% } %><%= data['deployment-name'] %><% if(data['deployment-db']) { %>-persistent-storage<% } else if(data['deployment-client']) { %>-env<% } %> <% if(data['deployment-db']) { %>
+          persistentVolumeClaim:
+            claimName: db-<%= data['deployment-name'] %>-persistent-volume-claim <% } else if(data['deployment-client']) { %>
+          configMap:
+            name: client-<%= data['deployment-name'] %>-config-map <% } %> <% } %>

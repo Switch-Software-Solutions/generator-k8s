@@ -9,62 +9,57 @@ module.exports = {
     },
     {
       type: 'input',
-      name: 'global-namespace',
-      message: 'The name of the namespace?',
-      default: '${NAMESPACE}',
-      validate: input => !!!input ? 'Please enter a value' : true,
-    },
-    {
-      type: 'input',
-      name: 'global-app-name',
-      message: 'The name of the app (if any)?',
-      default: '${CI_PROJECT_PATH_SLUG}',
-    },
-    {
-      type: 'input',
-      name: 'global-app-tier',
-      message: 'The tier name of the app (if any)?',
-    },
-    {
-      type: 'input',
       name: 'deployment-name',
       message: 'The name of the deployment?',
-      default: '${CI_PROJECT_PATH_SLUG}',
       validate: input => !!!input ? 'Please enter a value' : true,
+    },
+    {
+      type: 'input',
+      name: 'deployment-replicas',
+      message: 'How many replicas?',
+      validate: input => !!!input ? 'Please enter a value' : true,
+      default: 1,
+    },
+    {
+      type: 'confirm',
+      name: 'deployment-db',
+      message: 'It deployment for database?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'deployment-db-mysql',
+      message: 'It deployment for mysql database?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'deployment-server',
+      message: 'It deployment for server (backend)?',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'deployment-client',
+      message: 'It deployment for client (frontend)?',
+      default: false,
     },
     {
       type: 'input',
       name: 'deployment-image',
       message: 'The dockerimage to use?',
-      default: '${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'input',
       name: 'deployment-ports',
-      message: 'The ports (semicolon separated) of the deployment (format: "name:port;name:port")?',
-      default: 'http:80',
+      message: 'The ports (semicolon separated) of the deployment?',
+      default: '5000',
     },
   ],
   transformAnswers(data) {
-    if (typeof data['global-app-name'] === 'string') {
-      data['global-app-name'] = data['global-app-name'].trim();
-    }
-    if (typeof data['global-app-tier'] === 'string') {
-      data['global-app-tier'] = data['global-app-tier'].trim();
-    }
     if (typeof data['deployment-ports'] === 'string') {
-      data['deployment-ports'] = data['deployment-ports']
-        .trim()
-        .split(';')
-        .filter(Boolean)
-        .map((port) => {
-          const mapping = {};
-          const split = port.trim().split(':');
-          mapping.name = split[0];
-          mapping.port = split[1];
-          return mapping;
-        });
+      data['deployment-ports'] = data['deployment-ports'].trim().split(';').filter(Boolean);
     }
   },
 };
