@@ -14,7 +14,7 @@
     "url": "git+https://github.com/Switch-Software-Solutions/generator-k8s.git"
   },
   "engines": {
-    "node": "^9.0.0",
+    "node": "^16.0.0",
     "npm": "*"
   },
   "publishConfig": {
