@@ -26,7 +26,7 @@ metadata:
 
 spec:<% if(data['ingress-use-ssl']) { %>
   tls:
-    - secretName: <%= data['tls-name'] %>
+    - secretName: <%= data['ingress-tls-name'] %>
       hosts:<% for(const url of data['ingress-urls']) { %>
         - <%= url -%><% } %><% } %>
   rules:<% for(const url of data['ingress-urls']) { %>
@@ -37,6 +37,6 @@ spec:<% if(data['ingress-use-ssl']) { %>
           pathType: Prefix
           backend:
             service:
-              name: <%= data['service-name'] %>
+              name: <%= data['ingress-service-name'] %>
               port:
                 number: 80<% } %>

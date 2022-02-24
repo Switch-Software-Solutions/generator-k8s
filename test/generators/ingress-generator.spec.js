@@ -6,8 +6,8 @@ const helpers = require('yeoman-test');
 const defaultPrompts = {
   'global-name': 'resource',
   'ingress-name': '${CI_PROJECT_PATH_SLUG}',
-  'tls-name': '${CI_PROJECT_PATH_SLUG}',
-  'service-name': '${CI_PROJECT_PATH_SLUG}',
+  'ingress-tls-name': '${CI_PROJECT_PATH_SLUG}',
+  'ingress-service-name': '${CI_PROJECT_PATH_SLUG}',
   'ingress-urls': 'smartive.ch;www.smartive.ch',
 };
 

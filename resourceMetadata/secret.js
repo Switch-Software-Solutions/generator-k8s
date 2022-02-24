@@ -4,31 +4,31 @@ module.exports = {
     {
       type: 'input',
       name: 'global-name',
-      message: 'The file name (without extension)?',
+      message: 'The file name (without extension)?: ',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'input',
       name: 'secret-name',
-      message: 'The name of the secret map?',
+      message: 'The name of the secret: ',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'confirm',
       name: 'secret-db',
-      message: 'It secret for database?',
+      message: 'It secret for database?: ',
       default: false,
     },
     {
       type: 'confirm',
       name: 'secret-server',
-      message: 'It secret for server (backend)?',
+      message: 'It secret for server (backend)?: ',
       default: false,
     },
     {
       type: 'confirm',
       name: 'secret-enter-values',
-      message: 'Do you wish to preenter values into the secret?',
+      message: 'Do you wish to preenter values into the secret?: ',
       default: false,
     },
     {
@@ -40,6 +40,14 @@ module.exports = {
     },
   ],
   transformAnswers(data) {
+    if (typeof data['global-name'] === 'string') {
+      data['global-name'] = data['global-name'].trim();
+    }
+
+    if (typeof data['secret-name'] === 'string') {
+      data['secret-name'] = data['secret-name'].trim();
+    }
+
     if (!data['secret-values']) {
       data['secret-values'] = ['secret: DATA'];
     } else if (typeof data['secret-values'] === 'string') {

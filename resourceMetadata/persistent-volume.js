@@ -10,7 +10,7 @@ module.exports = {
     {
       type: 'input',
       name: 'pv-name',
-      message: 'The name of the volume claim: ',
+      message: 'The name of the volume: ',
     },
     {
       type: 'checkbox',
@@ -58,12 +58,15 @@ module.exports = {
     if (typeof data['global-name'] === 'string') {
       data['global-name'] = data['global-name'].trim();
     }
+
     if (typeof data['pv-name'] === 'string') {
       data['pv-name'] = data['pv-name'].trim();
     }
+
     if (typeof data['pv-size'] === 'string') {
       data['pv-size'] = data['pv-size'].trim();
     }
+
     if (typeof data['pv-path'] === 'string') {
       data['pv-path'] = data['pv-path'].trim();
     }

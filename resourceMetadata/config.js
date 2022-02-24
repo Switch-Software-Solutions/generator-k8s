@@ -4,37 +4,37 @@ module.exports = {
     {
       type: 'input',
       name: 'global-name',
-      message: 'The file name (without extension)?',
+      message: 'The file name (without extension): ',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'input',
       name: 'config-name',
-      message: 'The name of the config map?',
+      message: 'The name of the config map: ',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'confirm',
       name: 'config-db',
-      message: 'It config for database?',
+      message: 'It config for database?: ',
       default: false,
     },
     {
       type: 'confirm',
       name: 'config-server',
-      message: 'It config for server (backend)?',
+      message: 'It config for server (backend)?: ',
       default: false,
     },
     {
       type: 'confirm',
       name: 'config-client',
-      message: 'It config for client (frontend)?',
+      message: 'It config for client (frontend)?: ',
       default: false,
     },
     {
       type: 'confirm',
       name: 'config-enter-values',
-      message: 'Do you wish to preenter values into the config?',
+      message: 'Do you wish to preenter values into the config?: ',
       default: false,
     },
     {
@@ -46,6 +46,14 @@ module.exports = {
     },
   ],
   transformAnswers(data) {
+    if (typeof data['global-name'] === 'string') {
+      data['global-name'] = data['global-name'].trim();
+    }
+
+    if (typeof data['config-name'] === 'string') {
+      data['config-name'] = data['config-name'].trim();
+    }
+
     if (!data['config-values']) {
       data['config-values'] = ['CONFIG: DATA'];
     } else if (typeof data['config-values'] === 'string') {
