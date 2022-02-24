@@ -1,0 +1,27 @@
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: <% if(data['pv-db']) { %>db-<% } else if(data['pv-server']) { %>server-<% } %><%= data['pv-name'] %>-persistent-volume
+    labels:
+      component: <% if(data['pv-db']) { %>db-<% } else if(data['pv-server']) { %>server-<% } %><%= data['pv-name'] %>-persistent-volume
+spec:
+  capacity:
+    storage: <%= data['pv-size'] %>
+  volumeMode: Filesystem
+  accessModes:
+    - <%= data['pv-access-mode'] %>
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: local-storage
+  local:
+    path: <%= data['pv-path'] %>
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - <%= data['pv-nodeAffinity'] %>
+
+
