@@ -1,10 +1,10 @@
-# Persistent Volume Claim
+# Persistent Volume
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
   name: <% if(data['pv-db']) { %>db-<% } else if(data['pv-server']) { %>server-<% } %><%= data['pv-name'] %>-persistent-volume
-    labels:
-      component: <% if(data['pv-db']) { %>db-<% } else if(data['pv-server']) { %>server-<% } %><%= data['pv-name'] %>-persistent-volume
+  labels:
+    component: <% if(data['pv-db']) { %>db-<% } else if(data['pv-server']) { %>server-<% } %><%= data['pv-name'] %>-persistent-volume
 spec:
   capacity:
     storage: <%= data['pv-size'] %>
