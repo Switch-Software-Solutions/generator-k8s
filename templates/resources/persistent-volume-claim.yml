@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: <%= data['pvc-name'] %>
-  namespace: <%= data['global-namespace'] %><% if(data['global-app-name'] || data['global-app-tier']) { %>
-  labels:<% if(data['global-app-name']) { %>
-    app: <%= data['global-app-name'] -%><% } %><% if(data['global-app-tier']) { %>
-    tier: <%= data['global-app-tier'] -%><% } %><% } %>
+  name: <% if(data['pvc-db']) { %>db-<% } else if(data['pvc-server']) { %>server-<% } %><%= data['pvc-name'] %>-persistent-volume-claim
 spec:
-  accessModes:<% for(const mode of data['pvc-access-modes']) { %>
-    - "<%= mode %>"<% } %>
+  selector:
+    matchLabels:
+      component: <% if(data['pvc-db']) { %>db-<% } else if(data['pvc-server']) { %>server-<% } %><%= data['pvc-name'] %>-persistent-volume
+  storageClassName: local-storage
+  accessModes:
+    - <%= data['pvc-access-mode'] %>
   resources:
     requests:
       storage: <%= data['pvc-size'] %>
