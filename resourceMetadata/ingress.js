@@ -21,14 +21,20 @@ module.exports = {
     },
     {
       type: 'confirm',
-      name: 'ingress-frontend',
-      message: 'Is it a frontend application?: ',
+      name: 'ingress-db',
+      message: 'It ingress for database?: ',
       default: false,
     },
     {
       type: 'confirm',
-      name: 'ingress-backend',
-      message: 'Is it a backend application?: ',
+      name: 'ingress-server',
+      message: 'It ingress for server (backend)?: ',
+      default: false,
+    },
+    {
+      type: 'confirm',
+      name: 'ingress-client',
+      message: 'It ingress for client (frontend)?: ',
       default: false,
     },
     {
@@ -38,14 +44,15 @@ module.exports = {
     },
     {
       type: 'input',
-      name: 'ingress-urls',
-      message: 'Semicolon separated list of hosts (without http/https): ',
+      name: 'ingress-url',
+      message: 'Hosts (without http/https): ',
       validate: input => !!!input ? 'Please enter a value' : true,
     },
     {
       type: 'input',
-      name: 'ingress-service-name',
-      message: 'The name of the service (ClusterIP):',
+      name: 'ingress-service-port',
+      message: 'The port of the service (ClusterIP): ',
+      default: 80,
     },
   ],
   transformAnswers(data) {
@@ -61,12 +68,12 @@ module.exports = {
       data['ingress-tls-name'] = data['ingress-tls-name'].trim();
     }
 
-    if (typeof data['ingress-service-name'] === 'string') {
-      data['ingress-service-name'] = data['ingress-service-name'].trim();
+    if (typeof data['ingress-service-port'] === 'string') {
+      data['ingress-service-port'] = data['ingress-service-port'].trim();
     }
 
-    if (typeof data['ingress-urls'] === 'string') {
-      data['ingress-urls'] = data['ingress-urls'].split(';').filter(Boolean);
+    if (typeof data['ingress-url'] === 'string') {
+      data['ingress-url'] = data['ingress-url'].trim();
     }
   },
 };

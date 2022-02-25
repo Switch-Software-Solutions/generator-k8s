@@ -2,12 +2,12 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: <%= data['ingress-name'] %>-ingress
+  name: <% if(data['ingress-db']) { %>db-<% } else if(data['ingress-server']) { %>server-<% } else if(data['ingress-client']) { %>client-<% } %><%= data['ingress-name'] %>-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /<% if(data['ingress-use-ssl']) { %>
-    nginx.ingress.kubernetes.io/ssl-redirect: 'true'<% } %><% if(data['ingress-backend']) { %>
-    nginx.ingress.kubernetes.io/proxy-body-size: '0'<% } %><% if(data['ingress-frontend']) { %>
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'<% } %><% if(data['ingress-server']) { %>
+    nginx.ingress.kubernetes.io/proxy-body-size: '0'<% } %><% if(data['ingress-client']) { %>
     nginx.ingress.kubernetes.io/configuration-snippet: |
       if ($request_uri ~* \.(manifest|appcache|html?|xml|json)) {
         add_header Cache-Control no-cache;
@@ -27,16 +27,16 @@ metadata:
 spec:<% if(data['ingress-use-ssl']) { %>
   tls:
     - secretName: <%= data['ingress-tls-name'] %>
-      hosts:<% for(const url of data['ingress-urls']) { %>
-        - <%= url -%><% } %><% } %>
-  rules:<% for(const url of data['ingress-urls']) { %>
-    - host: <%= url %>
+      hosts:
+        - <%= data['ingress-url'] %><% } %>
+  rules:
+    - host: <%= data['ingress-url'] %>
       http:
         paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: <%= data['ingress-service-name'] %>
-              port:
-                number: 80<% } %>
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: <% if(data['ingress-db']) { %>db-<% } else if(data['ingress-server']) { %>server-<% } else if(data['ingress-client']) { %>client-<% } %><%= data['ingress-name'] %>-cluster-ip-service
+                port:
+                  number: <%= data['ingress-service-port'] %>
