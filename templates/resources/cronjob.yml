@@ -1,0 +1,22 @@
+# Cronjob
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: <% if(data['cronjob-server']) { %>server-<% } %><%= data['cronjob-name'] %>-cronjob
+spec:
+  schedule: '0 19 * * *'
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: <%= data['cronjob-name'] %>
+              image: switchsoftware/sbi-cotizador-micro-autos-renewal-direct-query
+              ports:
+                - containerPort: <%= data['cronjob-port'] %>
+              envFrom:
+                - configMapRef:
+                    name: <% if(data['cronjob-server']) { %>server-<% } %><%= data['cronjob-name'] %>-config-map
+                - secretRef:
+                    name: <% if(data['cronjob-server']) { %>server-<% } %><%= data['cronjob-name'] %>-secret
+          restartPolicy: OnFailure
