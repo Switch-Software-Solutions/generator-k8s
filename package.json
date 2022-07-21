@@ -1,6 +1,6 @@
 {
-  "name": "@switch-software-solutions/generator-k8s",
-  "version": "0.0.0-development",
+  "name": "generator-k8s-switch",
+  "version": "0.1.0-development",
   "description": "Yeoman generator for kubernetes resources",
   "main": "generators/app/index.js",
   "scripts": {
