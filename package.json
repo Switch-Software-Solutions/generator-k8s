@@ -34,13 +34,13 @@
     "ejs": "^3.1.7",
     "fs-extra": "^5.0.0",
     "lodash": "^4.17.10",
-    "yeoman-generator": "^2.0.5"
+    "yeoman-generator": "^5.7.0"
   },
   "devDependencies": {
     "del-cli": "^4.0.1",
     "jest": "^27.5.1",
     "semantic-release": "^19.0.3",
-    "yeoman-test": "^1.7.0"
+    "yeoman-test": "^7.0.0"
   },
   "bugs": {
     "url": "https://github.com/Switch-Software-Solutions/generator-k8s/issues"
