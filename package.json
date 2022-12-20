@@ -40,7 +40,7 @@
     "del-cli": "^4.0.1",
     "jest": "^27.5.1",
     "semantic-release": "^19.0.3",
-    "yeoman-test": "^1.7.0"
+    "yeoman-test": "^1.9.1"
   },
   "bugs": {
     "url": "https://github.com/Switch-Software-Solutions/generator-k8s/issues"
